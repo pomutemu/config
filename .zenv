@@ -1,0 +1,27 @@
+[[ -e ~/.zenv.os ]] && source ~/.zenv.os
+
+declare -U fpath
+declare -U path
+
+fpath=(~/.zfunc "${fpath[@]}")
+path=(~/bin /usr/bin /bin "${path[@]}")
+
+if [[ -e ~/.path ]]; then
+  tac ~/.path | while IFS= read -r LINE; do
+    [[ -z "${LINE}" ]] && continue
+
+    path=("${LINE}" "${path[@]}")
+  done
+fi
+
+export BUNDLE_BIN=./vendor/.bin
+export BUNDLE_PATH=./vendor/bundle
+export EDITOR=zed
+export HISTFILE=~/.zhist
+export HISTSIZE=100000
+export LANG=C.UTF-8
+export LS_COLORS=di=34:ln=35:ex=31
+export PAGER="less -ERX"
+export PROMPT_EOL_MARK=
+export SAVEHIST=100000
+export THOR_DIFF="git diff --no-index"

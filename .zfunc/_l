@@ -1,0 +1,17 @@
+#compdef l
+
+# https://github.com/motemen/ghq/blob/master/zsh/_ghq
+
+function _l () {
+  _arguments -C \
+    '1: :__ghq_repositories' \
+    && ret=0
+}
+
+__ghq_repositories () {
+  local -a _repos
+  _repos=( ${(@f)"$(_call_program repositories ghq list --unique)"} )
+  _describe -t repositories Repositories _repos
+}
+
+_l "$@"

@@ -1,0 +1,7 @@
+- /.rsync-filter
+- /_*/
+
+- /.git/
+- /init.ps1
+- /*.md
+- /*.txt

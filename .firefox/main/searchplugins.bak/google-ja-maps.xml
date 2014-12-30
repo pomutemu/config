@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>
+    google-ja-maps
+  </ShortName>
+  <InputEncoding>
+    UTF-8
+  </InputEncoding>
+  <Url type="text/html" method="GET" template="https://maps.google.com/maps?q={searchTerms}&amp;hl=ja"/>
+  <Url type="application/x-suggestions+json" method="GET" template="https://maps.google.com/maps/suggest?q={searchTerms}&amp;hl=ja&amp;client=firefox"/>
+  <Image width="16" height="16" type="image/x-icon">
+    https://maps.gstatic.com/favicon3.ico
+  </Image>
+  <moz:SearchForm>
+    https://maps.google.com/maps?q=&amp;hl=ja
+  </moz:SearchForm>
+</OpenSearchDescription>

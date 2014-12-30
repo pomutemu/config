@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>
+    mdn-en
+  </ShortName>
+  <InputEncoding>
+    UTF-8
+  </InputEncoding>
+  <Url type="text/html" method="GET" template="https://www.google.com/search?q={searchTerms}+site:developer.mozilla.org/en-US/docs/Web&amp;hl=en&amp;tbs=qdr:a&amp;num=20"/>
+  <Image width="32" height="32" type="image/png">
+    https://developer.cdn.mozilla.net/media/img/favicon32.png
+  </Image>
+  <moz:SearchForm>
+    https://www.google.com/search?q=site:developer.mozilla.org/en-US/docs/Web&amp;hl=en&amp;tbs=qdr:a&amp;num=20
+  </moz:SearchForm>
+</OpenSearchDescription>

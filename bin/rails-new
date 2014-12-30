@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+shopt -s dotglob lastpipe
+
+echo "${1:-$(rbenv global)}" > ./.ruby-version
+
+echo "source \"https://rubygems.org\"" >> ./Gemfile
+echo "gem \"rails\"" >> ./Gemfile
+
+bundle i
+
+rails new -JT --skip-turbolinks -d sqlite3 -m ~/template/rails-template.rb . "${2:@}"
+
+cat <<-_YML_ > ./config/application.yml
+development:
+  secret_key_base: $(bundle e rake secret)
+
+test:
+  secret_key_base: $(bundle e rake secret)
+
+staging:
+  secret_key_base: <%= ENV["SECRET_KEY_BASE"] %>
+
+production:
+  secret_key_base: <%= ENV["SECRET_KEY_BASE"] %>
+_YML_
+
+cat ~/template/rails-template.rb > ./rails-template.rb.bak

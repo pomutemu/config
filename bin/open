@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+shopt -s dotglob lastpipe
+
+if [[ -n "${COMSPEC}" ]]; then
+  if [[ "$1" =~ ^https?:\/\/ ]]; then
+    cmd //c start "" "$@"
+  else
+    cmd //c start "" "$(cygpath -iw "$1")" "${@:2}"
+  fi
+fi

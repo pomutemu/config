@@ -1,0 +1,281 @@
+[alias]
+  ## Utils
+
+  get-refs = for-each-ref --sort -HEAD --format=\"%(HEAD) [%(refname:short)] %(subject)\"
+  get-revs = "!git show-branch --more=1000 --topics $(git rev-parse --abbrev-ref @ \"$@\") | sed -Ee '/^\\[/{b skip}; 1,/^-/{d}; q; :skip' && :"
+  get-reflog = show-branch -g
+  get-prs = "!JSON=\"$(curl -L \"https://api.github.com/repos/$(git config --get \"remote.${1:-origin}.url\" | sed -Ee 's/^.+\\/((-|\\w)+\\/(-|\\w)+)(\\/|\\.git)?$/\\1/')/pulls?state=all\")\"; NUMBERS=\"$(mktemp)\"; TITLES=\"$(mktemp)\"; echo \"${JSON}\" | jq -r \".[].number\" | sed -Ee 's/^(.+)$/[\\1]/' > \"${NUMBERS}\" && echo \"${JSON}\" | jq -r \".[].title\" > \"${TITLES}\" && paste -d \" \" \"${NUMBERS}\" \"${TITLES}\" && :"
+  peco-refs = "!git get-refs \"$@\" | peco --prompt \"ref>\" | sed -Ee 's/^[^[]*\\[([^]]+)\\].*$/\\1/' && :"
+  peco-revs = "!git get-revs \"${@:-$(git peco-refs)}\" | peco --prompt \"rev>\" | sed -Ee 's/^[^[]*\\[([^]]+)\\].*$/\\1/' && :"
+  peco-reflog = "!git get-reflog \"$@\" | peco --prompt \"rev>\" | sed -Ee 's/^[^[]*\\[([^]]+)\\].*$/\\1/' && :"
+  peco-prs = "!git get-prs \"$@\" | peco --prompt \"pr>\" | sed -Ee 's/^[^[]*\\[([^]]+)\\].*$/\\1/' && :"
+
+  ## Helps
+
+  al = config --get-regexp ^alias
+  hl = help -a
+
+  ## Basics
+
+  in = init
+  cl = clone
+  sg = "!git config user.name \"${1:-${GITHUB_NAME}}\" && git config user.email \"${2:-${1:-${GITHUB_NAME}}@users.noreply.github.com}\" && :"
+  wh = "!git name-rev --name-only --refs \"refs/heads/*\" \"${@:-@}\" && :"
+  st = status -s
+  ch = "!git status -s && git checkout -q \"$@\" && :"
+    chp = "!git ch \"$(git peco-revs)\" \"$@\" && :"
+    chr = "!git ch \"$(git peco-reflog)\" \"$@\" && :"
+  rl = rev-list
+  cf = "!for TREE_PATH in \"${@:2}\"; do git cat-file -p \"$1:${TREE_PATH}\"; done && :"
+    cfp = "!git cf \"$(git peco-revs)\" \"$@\" && :"
+    cfr = "!git cf \"$(git peco-reflog)\" \"$@\" && :"
+  ar = archive
+    arp = "!git ar \"$(git peco-revs):$1\" \"${@:2}\" && :"
+    arr = "!git ar \"$(git peco-reflog):$1\" \"${@:2}\" && :"
+
+  ## Worktree
+
+  ti = "!git checkout-index \"${@:--a}\" && :"
+  t2 = "!git checkout --ours \"${@:-.}\" && :"
+  t3 = "!git checkout --theirs \"${@:-.}\" && :"
+  tf = "!git checkout \"${1:-@}\" \"${2:-.}\" \"${@:3}\" && git status -s && :"
+    tfp = "!git tf \"$(git peco-revs)\" \"$@\" && :"
+    tfr = "!git tf \"$(git peco-reflog)\" \"$@\" && :"
+  tc = "!git cherry-pick -n \"$@\" && git status -s && :"
+    tcp = "!git tc $(git peco-revs) \"$@\" && :"
+    tcq = "!git tc \"$(git peco-revs)..$(git peco-revs)\" \"$@\" && :"
+    tcr = "!git tc $(git peco-reflog) \"$@\" && :"
+    tcs = "!git tc \"$(git peco-reflog)..$(git peco-reflog)\" \"$@\" && :"
+  qo = clean -dix
+  qn = clean -di
+  qi = clean -diX
+  df = diff -C --patch-with-stat
+    dfp = "!git df \"$(git peco-revs)\" \"$@\" && :"
+    dfq = "!git df \"$(git peco-revs)..$(git peco-revs)\" \"$@\" && :"
+    dfr = "!git df \"$(git peco-reflog)\" \"$@\" && :"
+    dfs = "!git df \"$(git peco-reflog)..$(git peco-reflog)\" \"$@\" && :"
+  dn = diff -C --no-index --patch-with-stat
+  ss = stash show
+  sa = stash save
+  sp = "!git stash pop -q --index \"$@\" && git status -s && :"
+  sd = stash drop
+  sq = stash clear
+  sl = stash list
+
+  ## Index
+
+  ad = "!git add -A \"$@\" && git status -s && :"
+  dr = "!git reset -q -- \"$@\" && git status -s && :"
+  ri = "!git rm -r --cached \"$@\" && git status -s && :"
+  rr = "!git rm -r \"$@\" && git status -s && :"
+  di = diff -C --cached --patch-with-stat
+    dip = "!git di \"$(git peco-revs)\" \"$@\" && :"
+    dir = "!git di \"$(git peco-reflog)\" \"$@\" && :"
+  dd = "!git add -A \"$@\" && git diff -C --cached --patch-with-stat -- \"$@\" && :"
+  d2 = diff -C --diff-filter U :1:..:2:
+  d3 = diff -C --diff-filter U :1:..:3:
+  lc = ls-files -c
+  lm = ls-files -m
+  ld = ls-files -d
+  lu = diff --name-only --diff-filter U
+  lt = ls-files -i --exclude-standard
+  lo = ls-files -o --directory
+  ln = ls-files -o --directory --exclude-standard
+  li = ls-files -io --directory --exclude-standard
+  lf = fsck --lost-found
+
+  ## Commit
+
+  cm = commit
+    cmf = "!git cm --fixup \"$(git peco-revs @)\" \"$@\" && :"
+    cms = "!git cm --squash \"$(git peco-revs @)\" \"$@\" && :"
+  ce = commit --allow-empty
+  ca = commit --amend --no-edit
+  cr = commit --amend
+  rs = reset --soft
+    rsp = "!git rs \"$(git peco-revs)\" \"$@\" && :"
+    rsr = "!git rs \"$(git peco-reflog)\" \"$@\" && :"
+  rh = "!git clean -di && git reset --hard \"$@\" && :"
+    rhp = "!git rh \"$(git peco-revs)\" \"$@\" && :"
+    rhr = "!git rh \"$(git peco-reflog)\" \"$@\" && :"
+  rb = rebase -i --keep-empty
+    rbp = "!git rb \"$(git peco-revs @)\" \"$@\" && :"
+  rp = rebase -ip --keep-empty # [WARN] `rebase -ip` has bugs: http://git-scm.com/docs/git-rebase
+    rpp = "!git rp \"$(git peco-revs @)\" \"$@\" && :"
+  rv = revert
+    rvp = "!git rv $(git peco-revs @) \"$@\" && :"
+    rvq = "!git rv \"$(git peco-revs @)..$(git peco-revs @)\" \"$@\" && :"
+
+  ## Log
+
+  ls = log -10 --first-parent --format=\"%C(red)%cn%C(reset) %C(yellow)%cr%C(reset) [%h] %s%C(green)%d%C(reset)\"
+    lsp = "!git ls \"$(git peco-revs)\" \"$@\" && :"
+    lsq = "!git ls \"$(git peco-revs)..$(git peco-revs)\" \"$@\" && :"
+    lsr = "!git ls \"$(git peco-reflog)\" \"$@\" && :"
+    lss = "!git ls \"$(git peco-reflog)..$(git peco-reflog)\" \"$@\" && :"
+  ll = log --date short --format=\"%C(red)%cn%C(reset) %C(yellow)%cd%C(reset) [%h] %s%C(green)%d%C(reset)\"
+    llp = "!git ll \"$(git peco-revs)\" \"$@\" && :"
+    llq = "!git ll \"$(git peco-revs)..$(git peco-revs)\" \"$@\" && :"
+    llr = "!git ll \"$(git peco-reflog)\" \"$@\" && :"
+    lls = "!git ll \"$(git peco-reflog)..$(git peco-reflog)\" \"$@\" && :"
+  lg = log --graph --date short --format=\"%C(red)%cn%C(reset) %C(yellow)%cd%C(reset) [%h] %s%C(green)%d%C(reset)\"
+    lgp = "!git lg \"$(git peco-revs)\" \"$@\" && :"
+    lgq = "!git lg \"$(git peco-revs)..$(git peco-revs)\" \"$@\" && :"
+    lgr = "!git lg \"$(git peco-reflog)\" \"$@\" && :"
+    lgs = "!git lg \"$(git peco-reflog)..$(git peco-reflog)\" \"$@\" && :"
+  sh = show -C --stat --pretty=short
+    shp = "!git sh $(git peco-revs) \"$@\" && :"
+    shq = "!git sh \"$(git peco-revs)..$(git peco-revs)\" \"$@\" && :"
+    shr = "!git sh $(git peco-reflog) \"$@\" && :"
+    shs = "!git sh \"$(git peco-reflog)..$(git peco-reflog)\" \"$@\" && :"
+
+  ## Patch
+
+  zf = diff --no-color
+    zfp = "!git zf \"$(git peco-revs)\" \"$@\" && :"
+    zfq = "!git zf \"$(git peco-revs)..$(git peco-revs)\" \"$@\" && :"
+    zfr = "!git zf \"$(git peco-reflog)\" \"$@\" && :"
+    zfs = "!git zf \"$(git peco-reflog)..$(git peco-reflog)\" \"$@\" && :"
+  zn = diff --no-index --no-color
+  zi = diff --cached --no-color
+    zip = "!git zi \"$(git peco-revs)\" \"$@\" && :"
+    zir = "!git zi \"$(git peco-reflog)\" \"$@\" && :"
+  ap = "!git apply \"$@\" || exit 1 && git status -s 2> /dev/null || exit 0 && :"
+  fp = "!git format-patch --stdout \"${@:--1}\" && :"
+    fpp = "!git fp \"$(git peco-revs)\" \"$@\" && :"
+    fpq = "!git fp \"$(git peco-revs)..$(git peco-revs)\" \"$@\" && :"
+    fpr = "!git fp \"$(git peco-reflog)\" \"$@\" && :"
+    fps = "!git fp \"$(git peco-reflog)..$(git peco-reflog)\" \"$@\" && :"
+
+  ## Branch
+
+  br = branch
+  cb = "!git status -s && git checkout -qb \"$@\" && :"
+    cbp = "!git cb \"$@\" \"$(git peco-revs)\" && :"
+    cbr = "!git cb \"$@\" \"$(git peco-reflog)\" && :"
+  co = "!git status -s && git checkout -q --orphan \"$@\" && :"
+    cop = "!git co \"$@\" \"$(git peco-revs)\" && :"
+    cor = "!git co \"$@\" \"$(git peco-reflog)\" && :"
+  bd = branch -d
+    bdp = "!git bd $(git peco-refs refs/heads) \"$@\" && :"
+  bm = branch -m
+    bmp = "!OLD=\"$(git peco-refs refs/heads)\"; read -erp \"${OLD}> \" NEW; git bm \"${OLD}\" \"${NEW}\" \"$@\" && :"
+  bl = "!git for-each-ref --sort -committerdate --format=\"%(color:red)%(committername)%(color:reset) %(color:yellow)%(committerdate:short)%(color:reset) [%(refname:short)] %(subject)\" \"${@:-refs/heads}\" && :"
+  bt = "!git for-each-ref --sort -committerdate --format=\"%(color:red)%(committername)%(color:reset) %(color:yellow)%(committerdate:short)%(color:reset) [%(refname:short)] %(subject)\" \"${@:-refs/remotes}\" && :"
+  ku = "!for BRANCH_NAME in \"${@:-@}\"; do git rev-parse --abbrev-ref $(echo \"${BRANCH_NAME}\" | sed -Ee 's/^(.+)$/\\1@{u}/'); done && :"
+    kup = "!git ku $(git peco-refs refs/heads) \"$@\" && :"
+
+  ## Tag
+
+  tg = tag
+  ta = tag
+    tap = "!git ta \"$@\" \"$(git peco-revs)\" && :"
+    tar = "!git ta \"$@\" \"$(git peco-reflog)\" && :"
+  td = tag -d
+    tdp = "!git td $(git peco-refs refs/tags) \"$@\" && :"
+  tm = "!git tag \"$2\" \"$1\" \"${@:3}\" && git tag -d \"$1\" && :"
+    tmp = "!OLD=\"$(git peco-refs refs/tags)\"; read -erp \"${OLD}> \" NEW; git tm \"${OLD}\" \"${NEW}\" \"$@\" && :"
+  tl = "!git for-each-ref --sort -taggerdate --format=\"%(color:red)%(taggername)%(color:reset) %(color:yellow)%(taggerdate:short)%(color:reset) [%(refname:short)] %(subject)\" \"${@:-refs/tags}\" && :"
+
+  ## Merge
+
+  kt = "!git show-branch --topics $(git rev-parse --abbrev-ref \"${@:-@}\") && :"
+    ktp = "!git kt @ $(git peco-refs) \"$@\" && :"
+    ktq = "!git kt \"$(git peco-refs)\" $(git peco-refs) \"$@\" && :"
+  kc = "!git format-patch --stdout \"$1\" | git apply --check \"${@:2}\" && :"
+    kcp = "!git kc \"@..$(git peco-refs)\" \"$@\" && :"
+    kcq = "!git kc \"$(git peco-refs)..$(git peco-refs)\" \"$@\" && :"
+  mr = merge --no-ff
+    mrp = "!git mr $(git peco-refs) \"$@\" && :"
+  cp = cherry-pick
+    cpp = "!git cp $(git peco-revs) \"$@\" && :"
+    cpq = "!git cp \"$(git peco-revs)..$(git peco-revs)\" \"$@\" && :"
+    cpr = "!git cp $(git peco-reflog) \"$@\" && :"
+    cps = "!git cp \"$(git peco-reflog)..$(git peco-reflog)\" \"$@\" && :"
+  fl = merge --ff-only
+    flp = "!git fl \"$(git peco-refs)\" \"$@\" && :"
+  fr = rebase
+    frp = "!git fr \"$(git peco-refs)\" \"$@\" && :"
+
+  ## Remote
+
+  mt = remote
+  ma = remote add
+  mn = remote add --no-tags
+  md = remote remove
+  mm = remote rename
+  ml = remote -v
+  mu = remote update --prune
+
+  ## Push
+
+  ps = push
+    psp = "!git ps \"$@\" $(git peco-refs refs/heads) && :"
+  xa = "!git commit --amend --no-edit && git push \"$@\" && :"
+  xr = "!git commit --amend && git push \"$@\" && :"
+  pd = push --delete
+    pdp = "!git pd \"$@\" $(git peco-refs refs/heads) && :"
+  xd = "!for BRANCH_NAME in \"${@:2}\"; do git merge-base --is-ancestor \"${BRANCH_NAME}\" \"$1/HEAD\" && git branch -df \"${BRANCH_NAME}\" && git push --delete \"$1\" \"${BRANCH_NAME}\"; done && :"
+    xdp = "!git xd \"$@\" $(git peco-refs refs/heads) && :"
+
+  ## Pull
+
+  pl = pull --ff-only
+    plp = "!git pl \"$@\" $(git peco-refs refs/heads) && :"
+  pr = pull --rebase
+    prp = "!git pr \"$@\" $(git peco-refs refs/heads) && :"
+  pp = "!for PR_NUMBER in \"${@:2}\"; do git fetch -fu \"$1\" $(echo \"${PR_NUMBER}\" | sed -Ee 's/^(.+)$/pull\\/\\1\\/head:heads\\/'\"$1\"'#\\1/'); done && :"
+    ppp = "!git pp \"$1\" $(git peco-prs \"$1\") && :"
+
+  ## Submodule
+
+  um = submodule
+  ua = submodule add
+  ud = submodule deinit -f
+  uu = submodule update --init --recursive
+
+  ## Others
+
+  ka = check-attr -a
+  ki = check-ignore -v --no-index
+  aa = "!echo \"$@\" >> \"$(git rev-parse --git-dir)/info/attributes\" && :"
+  ai = "!echo \"$@\" >> \"$(git rev-parse --git-dir)/info/exclude\" && :"
+
+  ## Hub
+
+  nr = "!git init && touch ./.gitignore && hub create -d \"${@:-[WIP]}\" && hub browse && :"
+  np = "!git commit --allow-empty --edit -m \"[WIP]\" && git push -u \"$1\" \"$2\" && git log -1 --format=%B | hub pull-request -ob \"$3\" -F - \"${@:4}\""
+
+[core]
+  attributesfile = ~/.gitattributes.global
+  autocrlf = false
+  excludesfile = ~/.gitignore.global
+  safecrlf = true
+
+[color "status"]
+  added = yellow
+
+[merge "ours"]
+  driver = true
+
+[pager]
+  commit = true
+  diff = git diff-highlight | ${PAGER}
+  log = git diff-highlight | ${PAGER}
+  show = git diff-highlight | ${PAGER}
+  show-branch = true
+  status = true
+
+[push]
+  followtags = true
+  default = upstream
+
+[rebase]
+  autosquash = true
+  autostash = true
+
+[url "ssh://github.com/"]
+  insteadof = https://github.com/
+
+[url "ssh://heroku.com/"]
+  insteadof = https://git.heroku.com/

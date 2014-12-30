@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>
+    amazon-jp
+  </ShortName>
+  <InputEncoding>
+    UTF-8
+  </InputEncoding>
+  <Url type="text/html" method="GET" template="https://www.amazon.co.jp/s?field-keywords={searchTerms}"/>
+  <Url type="application/x-suggestions+json" method="GET" template="https://completion.amazon.co.jp/search/complete?q={SearchTerm}&amp;mkt=6&amp;search-alias=aps"/>
+  <Image width="16" height="16" type="image/x-icon">
+    https://www.amazon.co.jp/favicon.ico
+  </Image>
+  <moz:SearchForm>
+    https://www.amazon.co.jp/gp/cart/view.html
+  </moz:SearchForm>
+</OpenSearchDescription>

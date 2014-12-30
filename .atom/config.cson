@@ -1,0 +1,56 @@
+"*":
+  autosave:
+    enabled: true
+  core:
+    audioBeep: false
+    autoHideMenuBar: true
+    themes: [
+      "one-dark-ui"
+      "mosh-dark-syntax"
+    ]
+  "disable-keybindings":
+    allCommunityPackages: true
+    bundledPackages: [
+      "autocomplete-plus"
+    ]
+    prefixKeys: [
+      "ctrl-k"
+    ]
+  editor:
+    autoIndentOnPaste: false
+    fontFamily: "Myrica MM"
+    fontSize: 20
+    invisibles:
+      cr: "◆"
+      eol: "◇"
+      space: " "
+      tab: "▷"
+    lineHeight: 1.15
+    preferredLineLength: 150
+    scrollSensitivity: 150
+    showIndentGuide: true
+    showInvisibles: true
+    softWrap: true
+    undoGroupingInterval: 200
+    zoomFontWhenCtrlScrolling: false
+  "exception-reporting":
+    userId: "10e52bea-8e60-9e9e-1390-85cabcfe338b"
+  "line-ending-selector":
+    defaultLineEnding: "LF"
+  linter:
+    showErrorInline: false
+  metrics:
+    userId: "3790942095c479a4f23cec268dd14ff76e6f0079"
+  "one-dark-ui":
+    layoutMode: "Spacious"
+  pigments:
+    delayBeforeScan: 1000
+    markerType: "square-dot"
+  "trailing-spaces":
+    enableForIndentation: true
+  "tree-view":
+    autoReveal: true
+    hideVcsIgnoredFiles: true
+    squashDirectoryNames: true
+  welcome:
+    showOnStartup: false

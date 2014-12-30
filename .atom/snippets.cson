@@ -1,0 +1,29 @@
+"*":
+  "base":
+    "prefix": "base"
+    "body": "\\${${1:0}##*/}$2"
+  "bash":
+    "prefix": "bash,"
+    "body": """
+      #!/usr/bin/env bash
+      shopt -s dotglob lastpipe
+    """
+  "dir":
+    "prefix": "dir"
+    "body": "\\${${1:0}%/*}$2"
+  "env":
+    "prefix": "env"
+    "body": "#!/usr/bin/env"
+  "ens":
+    "prefix": "ens"
+    "body": " "
+  "link":
+    "prefix": "link"
+    "body": "[$1]($2)$3"
+  "snip":
+    "prefix": "snip,"
+    "body": """
+      "$1":
+      \t"prefix": "${2:$1}"
+      \t"body": "${3:$2}"$4
+    """

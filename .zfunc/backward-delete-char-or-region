@@ -1,0 +1,6 @@
+if (( REGION_ACTIVE )); then
+  zle kill-region
+  shift killring
+else
+  zle backward-delete-char
+fi

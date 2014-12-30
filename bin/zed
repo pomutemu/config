@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+[[ -e ~/.zshrc ]] && source ~/.zshrc
+
+zed "$@"

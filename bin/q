@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+set -u
+type jq > /dev/null || exit 1
+
+Q_ROOT="${Q_ROOT:-$(echo ~/.q)}"
+
+OPT_INSTALL=0
+OPT_LIST=0
+
+while getopts il OPT; do
+  case "${OPT}" in
+    i) OPT_INSTALL=1
+    ;;
+    l) OPT_LIST=1
+    ;;
+    \?) exit 1
+    ;;
+  esac
+done
+
+shift "$(( OPTIND - 1 ))"
+
+if (( OPT_INSTALL )); then
+  ID="$1"
+  URL="$2"
+elif (( OPT_LIST )); then
+  :
+else
+  ID="$1"
+  JQ_ARGS=("${@:2}")
+fi
+
+if (( OPT_INSTALL )); then
+  if [[ "${URL}" =~ ^https?:\/\/ ]]; then
+    DOWNLOAD_URL="${URL}"
+  else
+    OWNER_ID="${URL%%/*}"
+    T1="${URL#*/}"
+    REPO_ID="${T1%%:*}"
+    CONTENT_PATH="${T1#*:}"
+    DOWNLOAD_URL="$(curl -L "https://api.github.com/repos/${OWNER_ID}/${REPO_ID}/contents/${CONTENT_PATH}" | jq -r .download_url)"
+  fi
+
+  [[ "${DOWNLOAD_URL}" =~ ^https?:\/\/ ]] || exit 1
+
+  mkdir -p "${Q_ROOT}"
+
+  curl -L "${DOWNLOAD_URL}" | jq . > "${Q_ROOT}/${ID}.json"
+elif (( OPT_LIST )); then
+  ls -1U "${Q_ROOT}" | sed -nEe 's/^(.+)\.json$/\1/ p'
+else
+  if [[ -n "${JQ_ARGS[@]:-}" ]]; then
+    cat "${Q_ROOT}/${ID}.json" | jq -r "${JQ_ARGS[@]}"
+  else
+    cat "${Q_ROOT}/${ID}.json"
+  fi
+fi

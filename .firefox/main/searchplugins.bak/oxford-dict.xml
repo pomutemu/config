@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>
+    oxford-dict
+  </ShortName>
+  <InputEncoding>
+    UTF-8
+  </InputEncoding>
+  <Url type="text/html" method="GET" template="http://www.oxforddictionaries.com/definition/learner/{searchTerms}"/>
+  <Image width="16" height="16" type="image/x-icon">
+    http://www.oxforddictionaries.com/favicon.ico
+  </Image>
+  <moz:SearchForm>
+    http://www.oxforddictionaries.com/
+  </moz:SearchForm>
+</OpenSearchDescription>

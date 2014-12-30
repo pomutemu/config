@@ -1,0 +1,18 @@
+local n
+local res
+
+n="$(\ls -AHU | \grep -c)"
+
+if (( n == 0 )); then
+  :
+elif (( n <= 100 )); then
+  res="$(ls -w "${COLUMNS}")"
+
+  if (( "$(echo "${res}" | \grep -c)" <= 10 )); then
+    echo "${res}"
+  else
+    echo "${n} files"
+  fi
+else
+  echo "${n} files"
+fi

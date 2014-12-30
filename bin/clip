@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+shopt -s dotglob lastpipe
+
+if [[ -n "${COMSPEC}" ]]; then
+  "${SYSTEMROOT}/system32/clip" "$@"
+fi

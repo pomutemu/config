@@ -1,0 +1,6 @@
+if [[ -z "${BUFFER}" ]]; then
+  BUFFER=./
+  zle end-of-line
+fi
+
+zle expand-or-complete

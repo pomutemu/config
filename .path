@@ -1,0 +1,8 @@
+./node_modules/.bin
+./vendor/.bin
+
+~/.heroku/bin
+~/.rbenv/bin
+~/.rbenv/shims
+
+/usr/share/git/diff-highlight/diff-highlight

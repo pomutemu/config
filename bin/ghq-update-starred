@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+shopt -s dotglob lastpipe
+
+if [[ -n "$1" ]]; then
+  echo "$@" | ghq import -u
+else
+  curl -L "https://api.github.com/users/${GITHUB_ID}/starred" | jq -r ".[].html_url" | ghq import -u
+fi

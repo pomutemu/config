@@ -1,0 +1,6 @@
+/.git/** -diff
+/vendor/.bin/** -diff
+/vendor/bundle/** -diff
+
+*.log -diff
+*.stackdump -diff

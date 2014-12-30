@@ -1,0 +1,8 @@
+if (( REGION_ACTIVE )); then
+  zle forward-char
+else
+  zle beginning-of-line
+  zle set-mark-command
+fi
+
+zle end-of-line

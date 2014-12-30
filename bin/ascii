@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+shopt -s dotglob lastpipe
+
+echo " !\"#\$%&'()*+,-./"
+echo "0123456789:;<=>?"
+echo "@ABCDEFGHIJKLMNO"
+echo "PQRSTUVWXYZ[\\]^_"
+echo "\`abcdefghijklmno"
+echo "pqrstuvwxyz{|}~ "

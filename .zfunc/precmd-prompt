@@ -1,0 +1,5 @@
+if [[ -n "${MSYSTEM}" ]]; then
+  export PROMPT="$(cmd //c powerline --color cmd)"$'\n'"%(?/%F{white}/%F{red})[%D{%H:%M}]%f "
+else
+  export PROMPT="$(powerline)"$'\n'"%(?/%F{white}/%F{red})[%D{%H:%M}]%f "
+fi

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<OpenSearchDescription xmlns="http://a9.com/-/spec/opensearch/1.1/" xmlns:moz="http://www.mozilla.org/2006/browser/search/">
+  <ShortName>
+    qiita-stocked
+  </ShortName>
+  <InputEncoding>
+    UTF-8
+  </InputEncoding>
+  <Url type="text/html" method="GET" template="https://qiita.com/search?q={searchTerms}&amp;sort=created&amp;stocked=1"/>
+  <Image width="48" height="48" type="image/x-icon">
+    https://qiita.com/icons/favicons/public/production.ico
+  </Image>
+  <moz:SearchForm>
+    https://qiita.com/
+  </moz:SearchForm>
+</OpenSearchDescription>

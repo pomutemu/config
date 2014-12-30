@@ -1,0 +1,2 @@
+zle kill-region
+echo -n "${CUTBUFFER}" | clip

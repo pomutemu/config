@@ -1,0 +1,5 @@
+if [[ -n "$1" ]]; then
+  cd "$(ghq list -e -p "$1")"
+else
+  ghq list
+fi

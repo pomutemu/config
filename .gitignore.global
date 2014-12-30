@@ -1,0 +1,6 @@
+/.git/
+/vendor/.bin/
+/vendor/bundle/
+
+*.log
+*.stackdump
